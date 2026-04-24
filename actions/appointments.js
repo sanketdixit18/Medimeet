@@ -1,3 +1,29 @@
+// "use server";
+
+// import { db } from "@/lib/prisma";
+// import { auth } from "@clerk/nextjs/server";
+// import { revalidatePath } from "next/cache";
+// import { deductCreditsForAppointment } from "@/actions/credits";
+// import { Vonage } from "@vonage/server-sdk";
+// import { addDays, addMinutes, format, isBefore, endOfDay } from "date-fns";
+// import { Auth } from "@vonage/auth";
+
+// // Initialize Vonage Video API client
+// // const credentials = new Auth({
+// //   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+// //   privateKey: process.env.VONAGE_PRIVATE_KEY,
+// // });
+// const rawPrivateKey = process.env.VONAGE_PRIVATE_KEY || "";
+// const privateKey = rawPrivateKey.includes("\\n")
+//   ? rawPrivateKey.replace(/\\n/g, "\n")
+//   : rawPrivateKey;
+
+// const credentials = new Auth({
+//   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+//   privateKey: privateKey,
+// });
+
+
 "use server";
 
 import { db } from "@/lib/prisma";
@@ -9,10 +35,6 @@ import { addDays, addMinutes, format, isBefore, endOfDay } from "date-fns";
 import { Auth } from "@vonage/auth";
 
 // Initialize Vonage Video API client
-// const credentials = new Auth({
-//   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
-//   privateKey: process.env.VONAGE_PRIVATE_KEY,
-// });
 const rawPrivateKey = process.env.VONAGE_PRIVATE_KEY || "";
 const privateKey = rawPrivateKey.includes("\\n")
   ? rawPrivateKey.replace(/\\n/g, "\n")
@@ -22,7 +44,8 @@ const credentials = new Auth({
   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
   privateKey: privateKey,
 });
-
+const options = {};
+const vonage = new Vonage(credentials, options);
 /**
  * Book a new appointment with a doctor
  */
