@@ -15,14 +15,13 @@ import { Auth } from "@vonage/auth";
 // });
 const rawPrivateKey = process.env.VONAGE_PRIVATE_KEY || "";
 const privateKey = rawPrivateKey.includes("\\n")
-  ? rawPrivateKey.replace(/\\n/g, "\n")   // convert \n text → real newlines
+  ? rawPrivateKey.replace(/\\n/g, "\n")
   : rawPrivateKey;
 
 const credentials = new Auth({
-  privateKey: privateKey,  // proper RSA key
+  applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+  privateKey: privateKey,
 });
-const options = {};
-const vonage = new Vonage(credentials, options);
 
 /**
  * Book a new appointment with a doctor
