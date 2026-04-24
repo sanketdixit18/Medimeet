@@ -9,9 +9,17 @@ import { addDays, addMinutes, format, isBefore, endOfDay } from "date-fns";
 import { Auth } from "@vonage/auth";
 
 // Initialize Vonage Video API client
+// const credentials = new Auth({
+//   applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+//   privateKey: process.env.VONAGE_PRIVATE_KEY,
+// });
+const rawPrivateKey = process.env.VONAGE_PRIVATE_KEY || "";
+const privateKey = rawPrivateKey.includes("\\n")
+  ? rawPrivateKey.replace(/\\n/g, "\n")   // convert \n text → real newlines
+  : rawPrivateKey;
+
 const credentials = new Auth({
-  applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
-  privateKey: process.env.VONAGE_PRIVATE_KEY,
+  privateKey: privateKey,  // proper RSA key
 });
 const options = {};
 const vonage = new Vonage(credentials, options);
