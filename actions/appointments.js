@@ -734,14 +734,45 @@ import { Auth } from "@vonage/auth";
 //   return new Vonage(credentials, {});
 // }
 
-function getVonageClient() {
-  const raw = process.env.VONAGE_PRIVATE_KEY || "";
-  const normalized = raw.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
+// function getVonageClient() {
+//   const raw = process.env.VONAGE_PRIVATE_KEY || "";
+//   const normalized = raw.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
 
-  const privateKey = Buffer.from(normalized, "utf-8");
+//   const privateKey = Buffer.from(normalized, "utf-8");
+
+//   const credentials = new Auth({
+//     applicationId: process.env.VONAGE_APPLICATION_ID,
+//     privateKey,
+//   });
+
+//   return new Vonage(credentials, {});
+// }
+
+function getVonageClient() {
+  const rawKey = process.env.VONAGE_PRIVATE_KEY;
+  const appId = process.env.VONAGE_APPLICATION_ID;
+
+  if (!rawKey) {
+    throw new Error("VONAGE_PRIVATE_KEY is missing");
+  }
+
+  if (!appId) {
+    throw new Error("VONAGE_APPLICATION_ID is missing");
+  }
+
+  const normalizedKey = rawKey
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n")
+    .trim();
+
+  const privateKey = Buffer.from(normalizedKey, "utf-8");
+
+  console.log("Vonage Debug:");
+  console.log("App ID:", appId);
+  console.log("Key starts with:", normalizedKey.slice(0, 30));
 
   const credentials = new Auth({
-    applicationId: process.env.VONAGE_APPLICATION_ID,
+    applicationId: appId,
     privateKey,
   });
 
