@@ -722,15 +722,29 @@ import { addDays, addMinutes, format, isBefore, endOfDay } from "date-fns";
 import { Auth } from "@vonage/auth";
 
 // Build a fresh Vonage client at call-time so env vars are always read live
+// function getVonageClient() {
+//   const raw = process.env.VONAGE_PRIVATE_KEY || "";
+//   // Normalize escaped \n characters that Vercel stores in env vars
+//   const normalized = raw.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
+//   const privateKey = Buffer.from(normalized);
+//   const credentials = new Auth({
+//     applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+//     privateKey,
+//   });
+//   return new Vonage(credentials, {});
+// }
+
 function getVonageClient() {
   const raw = process.env.VONAGE_PRIVATE_KEY || "";
-  // Normalize escaped \n characters that Vercel stores in env vars
   const normalized = raw.replace(/\\n/g, "\n").replace(/\r\n/g, "\n");
-  const privateKey = Buffer.from(normalized);
+
+  const privateKey = Buffer.from(normalized, "utf-8");
+
   const credentials = new Auth({
-    applicationId: process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID,
+    applicationId: process.env.VONAGE_APPLICATION_ID,
     privateKey,
   });
+
   return new Vonage(credentials, {});
 }
 
