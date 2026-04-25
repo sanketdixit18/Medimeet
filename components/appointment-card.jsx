@@ -197,8 +197,11 @@ export function AppointmentCard({
   useEffect(() => {
     if (tokenData?.success) {
       // Redirect to video call page with token and session ID
+      // router.push(
+      //   `/video-call?sessionId=${tokenData.videoSessionId}&token=${tokenData.token}&appointmentId=${appointment.id}`
+      // );
       router.push(
-        `/video-call?sessionId=${tokenData.videoSessionId}&token=${tokenData.token}&appointmentId=${appointment.id}`
+        `/video-call?sessionId=${tokenData.videoSessionId}&token=${tokenData.token}&apiKey=${process.env.NEXT_PUBLIC_VONAGE_API_KEY}&appointmentId=${appointment.id}`
       );
     } else if (tokenData?.error) {
       setAction(null);
