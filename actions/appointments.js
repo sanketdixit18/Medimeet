@@ -795,15 +795,46 @@ export async function bookAppointment(formData) {
     // });
 
     // if (!patient) throw new Error("Patient not found");
+//     const clerkUser = await currentUser();
+
+// let patient = await db.user.findFirst({
+//   where: {
+//     clerkUserId: userId,
+//     role: "PATIENT",
+//   },
+// });
+
+// if (!patient) {
+//   patient = await db.user.create({
+//     data: {
+//       clerkUserId: userId,
+//       role: "PATIENT",
+//       name: clerkUser?.fullName || "New Patient",
+//       email:
+//         clerkUser?.emailAddresses?.[0]?.emailAddress ||
+//         "test@example.com",
+//       credits: 10,
+//     },
+//   });
+// }
     const clerkUser = await currentUser();
 
-let patient = await db.user.findFirst({
+// First: find user ONLY by clerkUserId (NOT role)
+let patient = await db.user.findUnique({
   where: {
     clerkUserId: userId,
-    role: "PATIENT",
   },
 });
 
+// If user exists but role is not PATIENT → update it
+if (patient && patient.role !== "PATIENT") {
+  patient = await db.user.update({
+    where: { clerkUserId: userId },
+    data: { role: "PATIENT" },
+  });
+}
+
+// If user does not exist → create
 if (!patient) {
   patient = await db.user.create({
     data: {
