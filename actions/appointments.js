@@ -720,7 +720,7 @@ import { deductCreditsForAppointment } from "@/actions/credits";
 import { Vonage } from "@vonage/server-sdk";
 import { addDays, addMinutes, format, isBefore, endOfDay } from "date-fns";
 import { Auth } from "@vonage/auth";
-
+import { currentUser } from "@clerk/nextjs/server";
 // Build a fresh Vonage client at call-time so env vars are always read live
 // function getVonageClient() {
 //   const raw = process.env.VONAGE_PRIVATE_KEY || "";
@@ -795,7 +795,9 @@ export async function bookAppointment(formData) {
     // });
 
     // if (!patient) throw new Error("Patient not found");
-    let patient = await db.user.findFirst({
+    const clerkUser = await currentUser();
+
+let patient = await db.user.findFirst({
   where: {
     clerkUserId: userId,
     role: "PATIENT",
@@ -807,12 +809,14 @@ if (!patient) {
     data: {
       clerkUserId: userId,
       role: "PATIENT",
-      name: "New Patient",
+      name: clerkUser?.fullName || "New Patient",
+      email:
+        clerkUser?.emailAddresses?.[0]?.emailAddress ||
+        "test@example.com",
       credits: 10,
     },
   });
 }
-
     const doctorId = formData.get("doctorId");
     const startTime = new Date(formData.get("startTime"));
     const endTime = new Date(formData.get("endTime"));
