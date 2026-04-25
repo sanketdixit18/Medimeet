@@ -790,11 +790,28 @@ export async function bookAppointment(formData) {
   }
 
   try {
-    const patient = await db.user.findUnique({
-      where: { clerkUserId: userId, role: "PATIENT" },
-    });
+    // const patient = await db.user.findUnique({
+    //   where: { clerkUserId: userId, role: "PATIENT" },
+    // });
 
-    if (!patient) throw new Error("Patient not found");
+    // if (!patient) throw new Error("Patient not found");
+    let patient = await db.user.findFirst({
+  where: {
+    clerkUserId: userId,
+    role: "PATIENT",
+  },
+});
+
+if (!patient) {
+  patient = await db.user.create({
+    data: {
+      clerkUserId: userId,
+      role: "PATIENT",
+      name: "New Patient",
+      credits: 10,
+    },
+  });
+}
 
     const doctorId = formData.get("doctorId");
     const startTime = new Date(formData.get("startTime"));
