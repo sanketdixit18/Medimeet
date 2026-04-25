@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function VideoCall({ sessionId, token }) {
+export default function VideoCall({ sessionId, token, apiKey }) {
   const [isLoading, setIsLoading] = useState(true);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -28,7 +28,7 @@ export default function VideoCall({ sessionId, token }) {
 
   const router = useRouter();
 
-  const appId = process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID;
+  // const appId = process.env.NEXT_PUBLIC_VONAGE_APPLICATION_ID;
 
   // Handle script load
   const handleScriptLoad = () => {
@@ -43,7 +43,8 @@ export default function VideoCall({ sessionId, token }) {
 
   // Initialize video session
   const initializeSession = () => {
-    if (!appId || !sessionId || !token) {
+    // if (!appId || !sessionId || !token) {
+    if (!apiKey || !sessionId || !token)
       toast.error("Missing required video call parameters");
       router.push("/appointments");
       return;
@@ -53,7 +54,8 @@ export default function VideoCall({ sessionId, token }) {
 
     try {
       // Initialize the session
-      sessionRef.current = window.OT.initSession(appId, sessionId);
+      // sessionRef.current = window.OT.initSession(appId, sessionId);
+      sessionRef.current = window.OT.initSession(apiKey, sessionId);
 
       // Subscribe to new streams
       sessionRef.current.on("streamCreated", (event) => {
@@ -176,7 +178,8 @@ export default function VideoCall({ sessionId, token }) {
     };
   }, []);
 
-  if (!sessionId || !token || !appId) {
+  // if (!sessionId || !token || !appId) {
+ if (!sessionId || !token || !apiKey)
     return (
       <div className="container mx-auto px-4 py-12 text-center">
         <h1 className="text-3xl font-bold text-white mb-4">
